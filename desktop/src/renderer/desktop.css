@@ -1,0 +1,22 @@
+[hidden] {
+  display: none !important;
+}
+
+.hint + .ghost-btn {
+  margin-top: 8px;
+}
+
+.quit-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* popup.css fixes the body at 320px, which overflows once the scrollbar
+   appears inside a real window. Let it fill the window instead. */
+body {
+  width: auto;
+}
+
+.field > .ghost-btn {
+  align-self: flex-start;
+}
