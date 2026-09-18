@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Steam FX — Currency Converter",
   "short_name": "Steam FX",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shows Steam store prices converted to any currency using live exchange rates.",
   "permissions": ["storage", "alarms"],
   "host_permissions": [
