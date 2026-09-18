@@ -24,6 +24,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
+      WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
     defaults:
       run:
         shell: bash
@@ -81,3 +82,14 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "Steam FX ${{ steps.version.outputs.tag }}" \
             --generate-notes
+
+      # Skipped unless a WINGET_TOKEN secret exists. See winget/README.md.
+      - name: Update the winget package
+        if: steps.version.outputs.skip != 'true' && env.WINGET_TOKEN != ''
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: pozii.SteamFX
+          version: ${{ steps.version.outputs.version }}
+          release-tag: ${{ steps.version.outputs.tag }}
+          installers-regex: 'SteamFX-Setup-.*\.exe$'
+          token: ${{ env.WINGET_TOKEN }}
