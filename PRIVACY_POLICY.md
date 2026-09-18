@@ -14,7 +14,7 @@ Steam FX does not collect, store, transmit, or sell any personal data. This appl
 
 - Fetches the same public exchange rate data from `open.er-api.com`.
 - Saves your settings and the cached rates in a folder on your PC (`%APPDATA%\SteamFX`), along with a small log file. None of it leaves your device.
-- If you turn on "Convert prices in the Steam app", it adds an empty file named `.cef-enable-remote-debugging` to your Steam folder. After Steam restarts, the app connects to Steam's local debugging port (`127.0.0.1:8080`, reachable only from your own PC) to read and update prices on Steam store pages, as the extension does.
+- To convert prices in the Steam app, it adds an empty file named `.cef-enable-remote-debugging` to your Steam folder. After Steam restarts, the app connects to Steam's local debugging port (`127.0.0.1:8080`, reachable only from your own PC) to read and update prices on Steam store pages, as the extension does.
 - Checks for updates by asking GitHub (`github.com`) for the latest release information and, when there is a newer version, downloading its installer from there. GitHub sees the request the way any website does (your IP address and the app's name and version). Nothing else about you or your PC is sent, and you can turn automatic checks off in the settings.
 - Uninstalling the app removes its folder, its startup entry, its downloaded updates and that file (when the app created it).
 

@@ -4,9 +4,9 @@ A Windows tray app that converts prices inside the Steam app itself, the same wa
 
 ## How it works
 
-Steam's built-in browser can open a local debugging port. When you turn on **Convert prices in the Steam app**, Steam FX puts an empty file called `.cef-enable-remote-debugging` in your Steam folder. After one Steam restart, Steam listens on `127.0.0.1:8080`. Steam FX connects to that port, finds the open store pages and runs the same conversion code as the extension.
+Steam's built-in browser can open a local debugging port. As soon as Steam FX finds your Steam install, it puts an empty file called `.cef-enable-remote-debugging` in your Steam folder. There's no switch for this, because converting prices in the Steam app is what the app is for. After one Steam restart, Steam listens on `127.0.0.1:8080`. Steam FX connects to that port, finds the open store pages and runs the same conversion code as the extension.
 
-Nothing in Steam is patched. The only thing Steam FX adds to your Steam folder is that one empty file, and it removes it again when you turn the switch off or uninstall the app. If the file was already there before Steam FX (some other tool put it there), Steam FX leaves it alone.
+Nothing in Steam is patched. The only thing Steam FX adds to your Steam folder is that one empty file, and the uninstaller removes it again. If the file was already there before Steam FX (some other tool put it there), Steam FX leaves it alone. The on/off switch in the window stops the conversion but doesn't remove the file; uninstalling does.
 
 This uses a debugging feature Steam ships for developers. It's not an official Valve feature for this, so keep that in mind.
 

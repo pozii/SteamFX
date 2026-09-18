@@ -32,8 +32,8 @@ Not affiliated with Valve or Steam. This is an independent community project.
 **Windows tray app**
 
 1. Download `SteamFX-Setup-<version>.exe` from [the latest release](https://github.com/pozii/SteamFX/releases/latest) and run it.
-2. Open Steam FX from the tray icon, pick a currency and turn on **Convert prices in the Steam app**.
-3. Restart Steam once when it asks.
+2. Steam FX sets itself up for the Steam app right away. Restart Steam once when it asks.
+3. Pick your currency from the tray icon.
 
 The tray app updates itself, and each release ships both parts under one version number.
 

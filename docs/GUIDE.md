@@ -61,13 +61,16 @@ The tray app converts prices inside the Steam app, the same way the extension do
 2. Windows may show a SmartScreen warning because the installer isn't signed yet. Choose **More info**, then **Run anyway**.
 3. A small window opens on first launch. If you can't find the tray icon later, click the `^` arrow next to the clock. Windows 11 often hides new icons there.
 
-### Turn it on for the Steam app
+### Using it with the Steam app
+
+There's nothing to switch on. Steam FX sets itself up for the Steam app as soon as it finds Steam.
 
 1. Pick your currency under **Convert to**.
-2. Switch on **Convert prices in the Steam app**.
-3. Restart Steam once. The window has a **Restart Steam** button, or you can do it from the tray menu. Steam FX asks before it closes anything.
+2. Restart Steam once. The window has a **Restart Steam** button, or you can do it from the tray menu. Steam FX asks before it closes anything.
 
-After that it connects by itself every time Steam starts, and the status line in the window says **Connected**. Open the Store tab in Steam and prices show the same `≈` badges as in the browser.
+After that it connects by itself every time Steam starts, and the **Steam app** line in the window says **Connected**. Open the Store tab in Steam and prices show the same `≈` badges as in the browser.
+
+To stop converting, use the on/off switch at the top of the window (or **Convert prices** in the tray menu). Uninstalling Steam FX removes everything it added to Steam.
 
 Steam FX has to be running for this to work, so **Launch at startup** is on by default. You can switch it off in the settings screen (gear icon), or from **Launch at startup** in the tray menu.
 

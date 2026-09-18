@@ -15,7 +15,6 @@ contextBridge.exposeInMainWorld('steamfx', {
 
   getDesktop: () => invoke('desktop:get'),
   setLaunchAtStartup: (value) => invoke('desktop:launch-at-startup', value),
-  setSteamIntegration: (value) => invoke('desktop:steam-integration', value),
   restartSteam: () => invoke('desktop:restart-steam'),
   setAutoUpdate: (value) => invoke('desktop:auto-update', value),
   checkForUpdates: () => invoke('updates:check'),

@@ -14,7 +14,6 @@ function loadDefaultSettings() {
 const DEFAULT_DESKTOP = {
   launchAtStartup: true,
   autoUpdate: true,
-  steamIntegration: false,
   firstRunDone: false
 };
 

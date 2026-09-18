@@ -60,10 +60,12 @@
     DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\PushNotifications\Backup\com.pozii.steamfx"
     DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Start\TileProperties\W~com.pozii.steamfx"
     DeleteRegKey HKCU "Software\Classes\AppUserModelId\com.pozii.steamfx"
+    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\com.pozii.steamfx"
 
     ; 6. Per-exe caches Windows fills in when the app is launched from Explorer
     DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\RunNotification" "StartupTNotiSteamFX"
     DeleteRegValue HKCU "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" "$INSTDIR\SteamFX.exe"
+    DeleteRegValue HKCU "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store" "$INSTDIR\Uninstall SteamFX.exe"
     DeleteRegValue HKCU "Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" "$INSTDIR\SteamFX.exe.FriendlyAppName"
     DeleteRegValue HKCU "Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache" "$INSTDIR\SteamFX.exe.ApplicationCompany"
   ${endIf}

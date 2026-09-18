@@ -69,15 +69,6 @@ class Session {
     await this.send('Runtime.evaluate', { expression: source });
   }
 
-  // Undo: run the "disabled" script in the live page and stop injecting later.
-  async revert(source) {
-    if (this.scriptId) {
-      await this.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: this.scriptId }).catch(() => {});
-      this.scriptId = null;
-    }
-    await this.send('Runtime.evaluate', { expression: source }).catch(() => {});
-  }
-
   close() {
     try {
       this.ws.close();
@@ -129,14 +120,6 @@ class Injector extends EventEmitter {
         s.apply(source).catch((err) => this.log('refresh failed:', err.message))
       )
     );
-  }
-
-  // Integration switched off: undo the changes in open pages, then disconnect.
-  async deactivate(revertSource) {
-    clearInterval(this.timer);
-    this.timer = null;
-    await Promise.all([...this.sessions.values()].map((s) => s.revert(revertSource)));
-    this.stop();
   }
 
   setReachable(value) {

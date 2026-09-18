@@ -45,28 +45,24 @@ const defaults = () => loadDefaultSettings();
 
 // ---------------------------------------------------------------- state ----
 
-function injectionState({ disabled = false } = {}) {
+function injectionState() {
   const rates = store.getRates();
-  return { ...store.getSettings(), ...(disabled ? { enabled: false } : {}), rates: rates ? rates.rates : null };
+  return { ...store.getSettings(), rates: rates ? rates.rates : null };
 }
 
 function steamStatus() {
-  const desktop = store.getDesktop();
   if (!steamDir) {
-    return { state: 'not-found', short: 'not found', text: "Steam wasn't found on this PC." };
-  }
-  if (!desktop.steamIntegration) {
     return {
-      state: 'off',
-      short: 'off',
-      text: 'Turn this on to convert prices inside the Steam app. Steam needs one restart afterwards.'
+      state: 'not-found',
+      short: 'not found',
+      text: "Steam wasn't found on this PC. It'll be picked up automatically once it's installed."
     };
   }
   if (integrationError) {
-    return { state: 'error', short: 'error', text: `Couldn't turn this on: ${integrationError}` };
+    return { state: 'error', short: 'error', text: `Couldn't set up Steam: ${integrationError}` };
   }
   if (injector.status.reachable) {
-    return { state: 'connected', short: 'connected', text: 'Connected. Prices in the store are being converted.' };
+    return { state: 'connected', short: 'connected', text: 'Connected. Prices in the Steam app are being converted.' };
   }
   if (steamRunning) {
     return {
@@ -75,7 +71,7 @@ function steamStatus() {
       text: 'Almost there. Restart Steam once so it lets Steam FX in.'
     };
   }
-  return { state: 'waiting', short: 'waiting for Steam', text: 'On. Waiting for Steam to start.' };
+  return { state: 'waiting', short: 'waiting for Steam', text: 'Ready. Waiting for Steam to start.' };
 }
 
 function desktopSnapshot() {
@@ -84,7 +80,6 @@ function desktopSnapshot() {
   return {
     launchAtStartup: desktop.launchAtStartup,
     autoUpdate: desktop.autoUpdate,
-    steamIntegration: desktop.steamIntegration,
     steam: steamStatus(),
     version: app.getVersion(),
     update: { state: update.state, text: update.text }
@@ -118,7 +113,7 @@ async function updateSettings(patch) {
   store.setSettings(clean);
   send('settings:changed', store.getSettings());
   refreshTray();
-  if (store.getDesktop().steamIntegration) await injector.refresh();
+  await injector.refresh();
 }
 
 async function refreshRates() {
@@ -126,7 +121,7 @@ async function refreshRates() {
     const rates = await fetchRates();
     store.setRates(rates);
     send('rates:changed', rates);
-    if (store.getDesktop().steamIntegration) await injector.refresh();
+    await injector.refresh();
     log('rates refreshed');
     return { ok: true };
   } catch (err) {
@@ -137,51 +132,31 @@ async function refreshRates() {
 
 // --------------------------------------------------------- steam client ----
 
-function removeOwnedFlag() {
-  if (!fs.existsSync(MARKER_FILE)) return;
-  try {
-    const flag = fs.readFileSync(MARKER_FILE, 'utf8').trim();
-    if (flag) fs.rmSync(flag, { force: true });
-    fs.rmSync(MARKER_FILE, { force: true });
-  } catch (err) {
-    log('could not remove Steam flag file:', err.message);
-  }
-}
-
 function ensureFlag() {
   const { created } = steam.enableFlag(steamDir);
   if (created) fs.writeFileSync(MARKER_FILE, steam.flagPath(steamDir));
 }
 
-async function setSteamIntegration(on) {
+// Converting prices in the Steam app is what this app is for, so there's no
+// switch: as soon as Steam is found, the flag file goes in and we start
+// looking for its debugging port. The uninstaller removes the file again.
+async function setUpSteam() {
   integrationError = null;
 
-  if (on) {
-    if (!steamDir) steamDir = await steam.findSteamDir();
-    if (!steamDir) {
-      publishDesktop();
-      return;
-    }
-    try {
-      ensureFlag();
-    } catch (err) {
-      integrationError = err.message;
-      log('could not create Steam flag file:', err.message);
-      store.setDesktop({ steamIntegration: false });
-      publishDesktop();
-      return;
-    }
-    store.setDesktop({ steamIntegration: true });
-    injector.start();
-    steamRunning = await steam.isSteamRunning();
-    if (steamRunning && !injector.status.reachable) notifyRestartNeeded();
-  } else {
-    store.setDesktop({ steamIntegration: false });
-    await injector.deactivate(buildInjection(injectionState({ disabled: true })));
-    removeOwnedFlag();
+  if (!steamDir) steamDir = await steam.findSteamDir();
+  if (!steamDir) return;
+
+  try {
+    ensureFlag();
+  } catch (err) {
+    integrationError = err.message;
+    log('could not create Steam flag file:', err.message);
+    return;
   }
 
-  publishDesktop();
+  injector.start();
+  steamRunning = await steam.isSteamRunning();
+  if (steamRunning && !injector.status.reachable) notifyRestartNeeded();
 }
 
 function notifyRestartNeeded() {
@@ -215,10 +190,19 @@ async function restartSteamFlow() {
   }
 }
 
-// Cheap poll: is Steam running at all? Only matters while we're waiting for
-// the debugging port to appear.
-async function pollSteamRunning() {
-  if (!store.getDesktop().steamIntegration || injector.status.reachable) return;
+// Every few seconds: is Steam running at all? That only matters while we're
+// waiting for its debugging port to appear. If Steam isn't installed yet, or
+// the flag file couldn't be written, try the setup again about once a minute.
+let setupTicks = 0;
+async function pollSteam() {
+  if (!steamDir || integrationError) {
+    if (++setupTicks % 15 === 0) {
+      await setUpSteam();
+      publishDesktop();
+    }
+    return;
+  }
+  if (injector.status.reachable) return;
   const running = await steam.isSteamRunning();
   if (running !== steamRunning) {
     steamRunning = running;
@@ -362,7 +346,7 @@ function registerIpc() {
     store.resetSettings();
     send('settings:changed', store.getSettings());
     refreshTray();
-    if (store.getDesktop().steamIntegration) await injector.refresh();
+    await injector.refresh();
   });
 
   ipcMain.handle('rates:get', () => store.getRates());
@@ -370,7 +354,6 @@ function registerIpc() {
 
   ipcMain.handle('desktop:get', () => desktopSnapshot());
   ipcMain.handle('desktop:launch-at-startup', (_e, value) => setLaunchAtStartup(Boolean(value)));
-  ipcMain.handle('desktop:steam-integration', (_e, value) => setSteamIntegration(Boolean(value)));
   ipcMain.handle('desktop:restart-steam', () => restartSteamFlow());
   ipcMain.handle('desktop:auto-update', (_e, value) => setAutoUpdate(Boolean(value)));
   ipcMain.handle('updates:check', () => updater.check());
@@ -427,30 +410,20 @@ app.whenReady().then(async () => {
   createTray();
   createWindow();
 
-  steamDir = await steam.findSteamDir();
-  log('steam dir:', steamDir || 'not found');
-
   const desktop = store.getDesktop();
 
   // Keep the Run entry pointing at this exe (e.g. after a reinstall).
   if (app.isPackaged && !SANDBOXED) await autostart.setEnabled(desktop.launchAtStartup, process.execPath);
 
-  if (desktop.steamIntegration && steamDir) {
-    try {
-      ensureFlag();
-    } catch (err) {
-      log('could not restore Steam flag file:', err.message);
-    }
-    injector.start();
-    steamRunning = await steam.isSteamRunning();
-  }
+  await setUpSteam();
+  log('steam dir:', steamDir || 'not found');
 
   updater.schedule(desktop.autoUpdate);
 
   const rates = store.getRates();
   if (!rates || Date.now() - rates.fetchedAt > REFRESH_MS) refreshRates();
   setInterval(refreshRates, REFRESH_MS);
-  setInterval(pollSteamRunning, 4000);
+  setInterval(pollSteam, 4000);
 
   publishDesktop();
 

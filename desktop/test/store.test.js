@@ -41,11 +41,12 @@ test('reset brings back the defaults and drops the cached rates', () => {
 
 test('desktop options are kept apart from the conversion settings', () => {
   const store = createStore(tmpFile());
-  assert.strictEqual(store.getDesktop().steamIntegration, false);
+  assert.strictEqual(store.getDesktop().launchAtStartup, true);
+  assert.strictEqual(store.getDesktop().autoUpdate, true);
 
-  store.setDesktop({ steamIntegration: true });
+  store.setDesktop({ launchAtStartup: false });
   store.resetSettings();
-  assert.strictEqual(store.getDesktop().steamIntegration, true);
+  assert.strictEqual(store.getDesktop().launchAtStartup, false);
 });
 
 test('a corrupt config file falls back to defaults instead of crashing', () => {

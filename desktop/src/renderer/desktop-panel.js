@@ -1,6 +1,5 @@
-// The parts of the window that only exist in the desktop app: the Steam client
-// switch, launch at startup, updates, and quit. Everything else comes from popup.js.
-const steamIntegrationEl = document.getElementById('steamIntegration');
+// The parts of the window that only exist in the desktop app: the Steam app
+// status, launch at startup, updates, and quit. Everything else comes from popup.js.
 const steamStatusEl = document.getElementById('steamStatus');
 const restartSteamBtn = document.getElementById('restartSteamBtn');
 const launchAtStartupEl = document.getElementById('launchAtStartup');
@@ -11,8 +10,6 @@ const installUpdateBtn = document.getElementById('installUpdateBtn');
 const quitBtn = document.getElementById('quitBtn');
 
 function renderDesktop(desktop) {
-  steamIntegrationEl.checked = desktop.steamIntegration;
-  steamIntegrationEl.disabled = desktop.steam.state === 'not-found';
   steamStatusEl.textContent = desktop.steam.text;
   restartSteamBtn.hidden = desktop.steam.state !== 'needs-restart';
   launchAtStartupEl.checked = desktop.launchAtStartup;
@@ -25,7 +22,6 @@ function renderDesktop(desktop) {
   installUpdateBtn.hidden = desktop.update.state !== 'ready';
 }
 
-steamIntegrationEl.addEventListener('change', () => window.steamfx.setSteamIntegration(steamIntegrationEl.checked));
 launchAtStartupEl.addEventListener('change', () => window.steamfx.setLaunchAtStartup(launchAtStartupEl.checked));
 autoUpdateEl.addEventListener('change', () => window.steamfx.setAutoUpdate(autoUpdateEl.checked));
 checkUpdateBtn.addEventListener('click', () => window.steamfx.checkForUpdates());
