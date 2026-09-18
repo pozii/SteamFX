@@ -1,0 +1,83 @@
+name: Release
+
+# One version for the whole project. Bump "version" in extension/manifest.json
+# and push to main. If that version has no release yet, this tags v<version>,
+# builds the Windows installer, zips the extension and publishes one release
+# with both attached, plus latest.yml, which the desktop app's updater reads.
+#
+# Both parts ship in the same release on purpose: the updater looks at the
+# latest release, so it has to find the installer there every time.
+on:
+  push:
+    branches: [main]
+    paths:
+      - extension/manifest.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check whether this version is already released
+        id: version
+        run: |
+          VERSION=$(node -p "require('./extension/manifest.json').version")
+          TAG="v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "$TAG already has a release, nothing to do."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Zip the extension
+        if: steps.version.outputs.skip != 'true'
+        shell: pwsh
+        run: |
+          $items = Get-ChildItem extension | Where-Object { $_.Name -ne 'README.md' }
+          Compress-Archive -Path $items.FullName -DestinationPath "steam-fx-extension-${{ steps.version.outputs.tag }}.zip"
+
+      - uses: actions/setup-node@v4
+        if: steps.version.outputs.skip != 'true'
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Install desktop dependencies
+        if: steps.version.outputs.skip != 'true'
+        working-directory: desktop
+        run: npm ci
+
+      - name: Test the desktop app
+        if: steps.version.outputs.skip != 'true'
+        working-directory: desktop
+        run: npm test
+
+      - name: Build the installer
+        if: steps.version.outputs.skip != 'true'
+        working-directory: desktop
+        run: npm run dist
+
+      - name: Publish the release
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            "steam-fx-extension-${{ steps.version.outputs.tag }}.zip" \
+            "desktop/dist/SteamFX-Setup-${{ steps.version.outputs.version }}.exe" \
+            "desktop/dist/latest.yml" \
+            --target "$GITHUB_SHA" \
+            --title "Steam FX ${{ steps.version.outputs.tag }}" \
+            --generate-notes
