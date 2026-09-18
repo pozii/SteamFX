@@ -1,0 +1,13 @@
+.steam-fx-badge {
+  --steam-fx-color: #67c1f5;
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--steam-fx-color) 15%, transparent);
+  color: var(--steam-fx-color);
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+  vertical-align: middle;
+}

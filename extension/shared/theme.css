@@ -1,0 +1,25 @@
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted-fg: #666666;
+  --border: #eaeaea;
+  --field-bg: #fafafa;
+  --pressed-bg: #eeeeee;
+  --track-off: #eaeaea;
+  --track-on: #0070f3;
+  --danger: #e5484d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --fg: #ededed;
+    --muted-fg: #888888;
+    --border: #2a2a2a;
+    --field-bg: #141414;
+    --pressed-bg: #1f1f1f;
+    --track-off: #2a2a2a;
+    --track-on: #0070f3;
+    --danger: #ff6369;
+  }
+}

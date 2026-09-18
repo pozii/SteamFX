@@ -1,0 +1,476 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  max-height: 600px;
+}
+
+body {
+  width: 320px;
+  max-height: 600px;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+body::-webkit-scrollbar {
+  width: 6px;
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-fg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand img {
+  border-radius: 50%;
+  display: block;
+}
+
+.brand-name {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.settings-header {
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 20px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted-fg);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.icon-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.icon-btn:hover {
+  background: var(--field-bg);
+  color: var(--fg);
+}
+
+.icon-btn:active {
+  background: var(--pressed-bg);
+}
+
+.content {
+  padding: 18px 20px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#settingsScreen .content {
+  padding-bottom: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-fg);
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted-fg);
+}
+
+.section-divider {
+  margin-top: 2px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted-fg);
+}
+
+.section-divider.danger-label {
+  color: var(--danger);
+}
+
+.content > .section-divider:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-header label {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--fg);
+}
+
+/* Badge color control */
+
+.color-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+input[type="color"] {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}
+
+.danger-btn {
+  appearance: none;
+  width: 100%;
+  border: none;
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.danger-btn:hover {
+  background: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.danger-btn:active {
+  background: color-mix(in srgb, var(--danger) 32%, transparent);
+}
+
+.reset-status {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--track-on);
+}
+
+/* Combobox (searchable currency picker) */
+
+.combobox {
+  position: relative;
+}
+
+.combobox-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--field-bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.1s ease;
+}
+
+.combobox-trigger:hover {
+  border-color: var(--muted-fg);
+}
+
+.combobox-trigger:active {
+  background: var(--pressed-bg);
+}
+
+.combobox-trigger[aria-expanded="true"] {
+  border-color: var(--fg);
+}
+
+.combobox-trigger:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.combobox-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.combobox-chevron {
+  flex: 0 0 auto;
+  color: var(--muted-fg);
+  transition: transform 0.15s ease;
+}
+
+.combobox-trigger[aria-expanded="true"] .combobox-chevron {
+  transform: rotate(180deg);
+}
+
+.combobox-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.combobox-search {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+}
+
+.combobox-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px;
+  max-height: 176px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.combobox-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.combobox-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.combobox-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.combobox-list::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-fg);
+}
+
+.combobox-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.combobox-item.is-active {
+  background: var(--field-bg);
+}
+
+.combobox-item:active {
+  background: var(--pressed-bg);
+}
+
+.combobox-item.is-selected {
+  font-weight: 600;
+}
+
+.combobox-item.is-selected::after {
+  content: "✓";
+  color: var(--track-on);
+  margin-left: 8px;
+}
+
+.combobox-empty {
+  padding: 10px;
+  text-align: center;
+  color: var(--muted-fg);
+  font-size: 12px;
+}
+
+/* Enabled toggle */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.switch-track {
+  position: absolute;
+  inset: 0;
+  background: var(--track-off);
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.switch input:checked + .switch-track {
+  background: var(--track-on);
+}
+
+.switch input:checked + .switch-track .switch-thumb {
+  transform: translateX(14px);
+}
+
+.switch:active .switch-track {
+  filter: brightness(0.92);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.muted {
+  color: var(--muted-fg);
+  font-size: 11px;
+}
+
+.ghost-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--muted-fg);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ghost-btn:hover {
+  background: var(--field-bg);
+  color: var(--fg);
+}
+
+.ghost-btn:active {
+  background: var(--pressed-bg);
+}
+
+.ghost-btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+  background: transparent;
+}
+
+.disclaimer {
+  margin: 0;
+  padding: 0 20px 16px;
+  font-size: 10px;
+  color: var(--muted-fg);
+  text-align: center;
+}

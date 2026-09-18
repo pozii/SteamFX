@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Steam FX</title>
+  <link rel="stylesheet" href="shared/theme.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="mainScreen">
+    <header class="header">
+      <div class="brand">
+        <img src="icons/icon32.png" alt="" width="20" height="20" />
+        <span class="brand-name">Steam FX</span>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="M216,130.16q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.6,107.6,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.29,107.29,0,0,0-26.25-10.86,8,8,0,0,0-7.06,1.48L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.6,107.6,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
+        </button>
+        <label class="switch">
+          <input type="checkbox" id="enabled" />
+          <span class="switch-track"><span class="switch-thumb"></span></span>
+        </label>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="field">
+        <label id="targetLabel">Convert to</label>
+        <div class="combobox" data-combobox="target">
+          <button type="button" class="combobox-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="targetLabel" disabled>
+            <span class="combobox-value">Loading…</span>
+            <svg class="combobox-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="combobox-panel" hidden>
+            <input type="text" class="combobox-search" placeholder="Search currency…" autocomplete="off" />
+            <ul class="combobox-list" role="listbox"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label id="sourceLabel">Store currency</label>
+        <div class="combobox" data-combobox="source">
+          <button type="button" class="combobox-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="sourceLabel" disabled>
+            <span class="combobox-value">Loading…</span>
+            <svg class="combobox-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="combobox-panel" hidden>
+            <input type="text" class="combobox-search" placeholder="Search currency…" autocomplete="off" />
+            <ul class="combobox-list" role="listbox"></ul>
+          </div>
+        </div>
+        <p class="hint" id="sourceHint">Guessed from your Steam region.</p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span id="ratesStatus" class="muted">Loading rates…</span>
+      <button id="refreshBtn" type="button" class="ghost-btn">Refresh</button>
+    </footer>
+
+    <p class="disclaimer">Not affiliated with Valve or Steam</p>
+  </div>
+
+  <div id="settingsScreen" hidden>
+    <header class="header settings-header">
+      <button type="button" id="backBtn" class="icon-btn" title="Back" aria-label="Back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M9.5 3L4.5 8l5 5M4.5 8h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <span class="brand-name">Settings</span>
+    </header>
+
+    <main class="content">
+      <div class="section-divider">Display</div>
+
+      <div class="field">
+        <div class="field-header">
+          <label for="replacePrice">Replace original price</label>
+          <span class="switch">
+            <input type="checkbox" id="replacePrice" />
+            <span class="switch-track"><span class="switch-thumb"></span></span>
+          </span>
+        </div>
+        <p class="hint">Show only the converted amount instead of adding it alongside the original price. The currency code is added for ambiguous symbols (e.g. "$" → "12.34 USD") or wherever Steam's own price already showed one.</p>
+      </div>
+
+      <div class="section-divider">Appearance</div>
+
+      <div class="field">
+        <div class="field-header">
+          <label for="badgeColor">Badge color</label>
+          <div class="color-control">
+            <input type="color" id="badgeColor" />
+            <button type="button" id="resetBadgeColor" class="ghost-btn">Reset</button>
+          </div>
+        </div>
+        <p class="hint">Only used when "Replace original price" is off.</p>
+      </div>
+
+      <div class="section-divider danger-label">Danger zone</div>
+
+      <div class="field">
+        <p class="hint">Restores every Steam FX setting to its default. This cannot be undone.</p>
+        <button type="button" id="resetBtn" class="danger-btn">Reset everything</button>
+        <p class="reset-status" id="resetStatus" hidden>Settings have been reset.</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="shared/settings.js"></script>
+  <script src="shared/currencies.js"></script>
+  <script src="shared/utils.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
