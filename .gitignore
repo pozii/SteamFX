@@ -1,0 +1,28 @@
+# Packaged builds
+*.zip
+*.crx
+*.xpi
+
+# Dependencies
+node_modules/
+
+# Desktop app build output
+desktop/dist/
+desktop/out/
+desktop/release/
+
+# Copied from extension/ by desktop/scripts/prepare-shared.js
+desktop/src/vendor/
+
+# Env / secrets
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
